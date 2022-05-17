@@ -11,7 +11,11 @@ struct ContentView: View {
 
       if let selectedProfile = selectedProfile,
          let url = profilesManager.visibleProfiles.first(where: { $0.id == selectedProfile })?.url {
-        QuickLookPreview(url: url)
+        if let htmlString = GenerateHTMLForProfile.generateHTMLPreview(forProfileURL: url) {
+          ProfilePreviewView(htmlString: htmlString)
+        } else {
+          QuickLookPreview(url: url)
+        }
       } else {
         Color(.windowBackgroundColor)
       }

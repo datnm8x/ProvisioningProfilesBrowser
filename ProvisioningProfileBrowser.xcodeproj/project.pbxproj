@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		09FB773A28335D9D0014E404 /* GenerateHTMLForProfile.m in Sources */ = {isa = PBXBuildFile; fileRef = 09FB773928335D9D0014E404 /* GenerateHTMLForProfile.m */; };
+		09FB773C283374E50014E404 /* template.html in Resources */ = {isa = PBXBuildFile; fileRef = 09FB773B283374E50014E404 /* template.html */; };
+		09FB773E2833773E0014E404 /* GenerateHTMLForProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09FB773D2833773E0014E404 /* GenerateHTMLForProfile.swift */; };
 		CA0526D825C4F479000D9F9A /* ProvisioningProfileBrowserApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA0526D725C4F479000D9F9A /* ProvisioningProfileBrowserApp.swift */; };
 		CA0526DA25C4F479000D9F9A /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA0526D925C4F479000D9F9A /* ContentView.swift */; };
 		CA0526DC25C4F47A000D9F9A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CA0526DB25C4F47A000D9F9A /* Assets.xcassets */; };
@@ -22,6 +25,11 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		09FB773728335D9D0014E404 /* ProvisioningProfileBrowser-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "ProvisioningProfileBrowser-Bridging-Header.h"; sourceTree = "<group>"; };
+		09FB773828335D9D0014E404 /* GenerateHTMLForProfile.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GenerateHTMLForProfile.h; sourceTree = "<group>"; };
+		09FB773928335D9D0014E404 /* GenerateHTMLForProfile.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = GenerateHTMLForProfile.m; sourceTree = "<group>"; };
+		09FB773B283374E50014E404 /* template.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = template.html; sourceTree = "<group>"; };
+		09FB773D2833773E0014E404 /* GenerateHTMLForProfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenerateHTMLForProfile.swift; sourceTree = "<group>"; };
 		CA0526D425C4F479000D9F9A /* Provisioning Profile Browser.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Provisioning Profile Browser.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		CA0526D725C4F479000D9F9A /* ProvisioningProfileBrowserApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProvisioningProfileBrowserApp.swift; sourceTree = "<group>"; };
 		CA0526D925C4F479000D9F9A /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -77,10 +85,15 @@
 				CA0526D725C4F479000D9F9A /* ProvisioningProfileBrowserApp.swift */,
 				CA0526F025CB96B1000D9F9A /* ProvisioningProfilesManager.swift */,
 				CA0526F625CB97F9000D9F9A /* QuickLookPreview.swift */,
+				09FB773D2833773E0014E404 /* GenerateHTMLForProfile.swift */,
+				09FB773828335D9D0014E404 /* GenerateHTMLForProfile.h */,
+				09FB773928335D9D0014E404 /* GenerateHTMLForProfile.m */,
+				09FB773B283374E50014E404 /* template.html */,
 				CA0526DB25C4F47A000D9F9A /* Assets.xcassets */,
 				CA0526E025C4F47B000D9F9A /* Info.plist */,
 				CA0526E125C4F47B000D9F9A /* ProvisioningProfileBrowser.entitlements */,
 				CA0526DD25C4F47B000D9F9A /* Preview Content */,
+				09FB773728335D9D0014E404 /* ProvisioningProfileBrowser-Bridging-Header.h */,
 			);
 			path = ProvisioningProfileBrowser;
 			sourceTree = "<group>";
@@ -128,6 +141,7 @@
 				TargetAttributes = {
 					CA0526D325C4F479000D9F9A = {
 						CreatedOnToolsVersion = 12.4;
+						LastSwiftMigration = 1330;
 					};
 				};
 			};
@@ -159,6 +173,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				CA0526DF25C4F47B000D9F9A /* Preview Assets.xcassets in Resources */,
+				09FB773C283374E50014E404 /* template.html in Resources */,
 				CA0526DC25C4F47A000D9F9A /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -171,7 +186,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				CA0526F725CB97F9000D9F9A /* QuickLookPreview.swift in Sources */,
+				09FB773E2833773E0014E404 /* GenerateHTMLForProfile.swift in Sources */,
 				CA0526F125CB96B1000D9F9A /* ProvisioningProfilesManager.swift in Sources */,
+				09FB773A28335D9D0014E404 /* GenerateHTMLForProfile.m in Sources */,
 				CA0526FA25CB9857000D9F9A /* Configure.swift in Sources */,
 				CA05270325CBA035000D9F9A /* Optional+IsNotNil.swift in Sources */,
 				CA0526DA25C4F479000D9F9A /* ContentView.swift in Sources */,
@@ -304,6 +321,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = ProvisioningProfileBrowser/ProvisioningProfileBrowser.entitlements;
 				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
@@ -317,9 +335,11 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 11.0;
-				PRODUCT_BUNDLE_IDENTIFIER = exv.vn.ProvisioningProfileBrowser;
+				PRODUCT_BUNDLE_IDENTIFIER = datnm8x.com.vn.ProvisioningProfileBrowser;
 				PRODUCT_NAME = "Provisioning Profile Browser";
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				SWIFT_OBJC_BRIDGING_HEADER = "ProvisioningProfileBrowser/ProvisioningProfileBrowser-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 			};
 			name = Debug;
@@ -329,6 +349,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = ProvisioningProfileBrowser/ProvisioningProfileBrowser.entitlements;
 				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
@@ -342,9 +363,10 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 11.0;
-				PRODUCT_BUNDLE_IDENTIFIER = exv.vn.ProvisioningProfileBrowser;
+				PRODUCT_BUNDLE_IDENTIFIER = datnm8x.com.vn.ProvisioningProfileBrowser;
 				PRODUCT_NAME = "Provisioning Profile Browser";
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				SWIFT_OBJC_BRIDGING_HEADER = "ProvisioningProfileBrowser/ProvisioningProfileBrowser-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 			};
 			name = Release;
