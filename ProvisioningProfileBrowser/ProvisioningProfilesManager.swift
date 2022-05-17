@@ -59,16 +59,7 @@ class ProvisioningProfilesManager: ObservableObject {
       for case let url as URL in enumerator {
         let profileData = try Data(contentsOf: url)
         let profile = try SwiftyProvisioningProfile.ProvisioningProfile.parse(from: profileData)
-        profiles.append(
-          ProvisioningProfile(
-            url: url,
-            uuid: profile.uuid,
-            name: profile.name,
-            teamName: profile.teamName,
-            creationDate: profile.creationDate,
-            expirationDate: profile.expirationDate
-          )
-        )
+        profiles.append(profile.toProfile(url: url))
       }
 
       self.loading = false
@@ -79,20 +70,30 @@ class ProvisioningProfilesManager: ObservableObject {
     }
   }
 
-  func delete(profile: ProvisioningProfile) {
+  func delete(profiles: [ProvisioningProfile]) {
+    guard !isAlertEmptySelected(profiles: profiles) else { return }
+
     let alertView = NSAlert()
-    alertView.messageText = "Do you want to delete Provisioning Profile?"
-    alertView.informativeText = "\(profile.name)\n\(profile.uuid)"
+
+    if profiles.count > 1 {
+      alertView.messageText = "Do you want to delete these files?"
+    } else {
+      alertView.messageText = "Do you want to delete the file?"
+    }
+    alertView.informativeText = profiles.map({ $0.name }).joined(separator: "\n")
     alertView.addButton(withTitle: "Cancel")
     alertView.addButton(withTitle: "Yes")
     alertView.alertStyle = .warning
+
     guard alertView.runModal() == .alertSecondButtonReturn else { return }
 
-    do {
-      try FileManager.default.trashItem(at: profile.url, resultingItemURL: nil)
-      profiles.removeAll { $0 == profile }
-    } catch {
-      print(error.localizedDescription)
+    profiles.forEach { profile in
+      do {
+        try FileManager.default.trashItem(at: profile.url, resultingItemURL: nil)
+        self.profiles.removeAll { $0 == profile }
+      } catch {
+        print(error.localizedDescription)
+      }
     }
   }
 
@@ -108,31 +109,82 @@ class ProvisioningProfilesManager: ObservableObject {
     }
   }
 
-  func revealInFinder(profile: ProvisioningProfile) {
-    guard FileManager.default.fileExists(atPath: profile.url.path) else {
-      let alertView = NSAlert()
-      alertView.messageText = "File not found!"
-      alertView.informativeText = "\(profile.name)\n\(profile.uuid)"
-      alertView.addButton(withTitle: "OK")
-      alertView.alertStyle = .warning
-      alertView.runModal()
-      return
-    }
-    NSWorkspace.shared.activateFileViewerSelecting([profile.url])
+  func revealInFinder(profiles: [ProvisioningProfile]) {
+    guard !isAlertEmptySelected(profiles: profiles) else { return }
+
+    NSWorkspace.shared.activateFileViewerSelecting(profiles.map({ $0.url }))
   }
 
-  func exportProfile(_ profile: ProvisioningProfile) {
+  func exportProfiles(_ profiles: [ProvisioningProfile]) {
+    guard !isAlertEmptySelected(profiles: profiles) else { return }
+
     let savePanel = NSSavePanel()
     savePanel.canCreateDirectories = true
-    savePanel.nameFieldStringValue = profile.name
+    savePanel.nameFieldStringValue = profiles.map({ $0.name }).joined(separator: ", ")
     savePanel.allowedFileTypes = ["mobileprovision"]
     savePanel.prompt = "Export"
-    savePanel.title = "Export Provisioning File (replace if exits)"
+    savePanel.title = "Export Provisioning Files (replace if exits)"
     savePanel.directoryURL = Self.desktopUrl
     savePanel.begin { (result) in
-      guard result == .OK, let url = savePanel.url else { return }
-      try? FileManager.default.copyItem(at: profile.url, to: url)
+      guard result == .OK, let saveURL = savePanel.url else { return }
+      profiles.forEach {
+        FileManager.copyItem(at: $0.url, to: saveURL.appendingPathComponent($0.name + ".mobileprovision"), replaceIfExits: true)
+      }
     }
+  }
+
+  private func isAlertEmptySelected(profiles: [ProvisioningProfile]) -> Bool {
+    guard profiles.isEmpty else { return false }
+
+    let alertView = NSAlert()
+    alertView.messageText = "There is no file selected!"
+    alertView.addButton(withTitle: "OK")
+    alertView.alertStyle = .warning
+    alertView.runModal()
+    return true
   }
 }
 
+extension ProvisioningProfilesManager {
+  static func getContentsOfProfile(_ profile: ProvisioningProfile) -> String? {
+    guard let profileData = try? Data(contentsOf: profile.url) as NSData, !profileData.isEmpty else { return nil }
+
+    var newDecoder: CMSDecoder?
+    CMSDecoderCreate(&newDecoder)
+
+    guard let decoder = newDecoder else { return nil }
+    CMSDecoderUpdateMessage(decoder, profileData.bytes, profileData.length)
+    CMSDecoderFinalizeMessage(decoder)
+
+    var newData: CFData?
+    CMSDecoderCopyContent(decoder, &newData)
+    guard let data = newData as Data? else { return nil }
+
+    return String(data: data, encoding: .utf8)
+  }
+}
+
+extension SwiftyProvisioningProfile.ProvisioningProfile {
+  var applicationID: String? {
+    guard let result = entitlements["application-identifier"] else { return nil }
+    switch result {
+    case .string(let value): return value
+    default: return nil
+    }
+  }
+
+  fileprivate func toProfile(url: URL) -> ProvisioningProfile {
+
+    ProvisioningProfile(
+      url: url,
+      uuid: uuid,
+      name: name,
+      appIdName: appIdName,
+      teamName: teamName,
+      creationDate: creationDate,
+      expirationDate: expirationDate,
+      applicationID: applicationID,
+      deviceUDIDs: provisionedDevices
+    )
+  }
+}

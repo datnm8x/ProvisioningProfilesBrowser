@@ -4,13 +4,15 @@ import SwiftUI
 struct ProfilesList: NSViewRepresentable {
   typealias NSViewType = NSScrollView
 
-  @Binding var data: [ProvisioningProfile]
-  @Binding var selection: ProvisioningProfile.ID?
+  @Binding private var data: [ProvisioningProfile]
+  @Binding var selectedID: ProvisioningProfile.ID?
+  @Binding fileprivate var selectionRows: [Int]
   @EnvironmentObject var profilesManager: ProvisioningProfilesManager
 
-  init(data: Binding<[ProvisioningProfile]>, selection: Binding<ProvisioningProfile.ID?>) {
+  init(data: Binding<[ProvisioningProfile]>, selectedID: Binding<ProvisioningProfile.ID?>, selectionRows: Binding<[Int]>) {
     self._data = data
-    self._selection = selection
+    self._selectedID = selectedID
+    self._selectionRows = selectionRows
   }
 
   func profile(at: Int) -> ProvisioningProfile? {
@@ -18,11 +20,20 @@ struct ProfilesList: NSViewRepresentable {
     return data[at]
   }
 
+  func profiles(at: [Int]) -> [ProvisioningProfile] {
+    at.compactMap({
+      guard $0 >= 0, $0 < data.count else { return nil }
+      return data[$0]
+    })
+  }
+
   func makeNSView(context: Context) -> NSViewType {
     let tableView = TableView()
     tableView.style = .plain
     tableView.usesAlternatingRowBackgroundColors = true
     tableView.columnAutoresizingStyle = .uniformColumnAutoresizingStyle
+    tableView.allowsMultipleSelection = true
+    tableView.allowsEmptySelection = true
 
     let columns = [
       configure(NSTableColumn(identifier: .init("icon"))) {
@@ -35,6 +46,14 @@ struct ProfilesList: NSViewRepresentable {
         $0.title = "Name"
         $0.sortDescriptorPrototype = NSSortDescriptor(
           keyPath: \ProvisioningProfile.name,
+          ascending: true,
+          comparator: { a, b in (a as! String).localizedStandardCompare(b as! String) }
+        )
+      },
+      configure(NSTableColumn(identifier: .init("appid"))) {
+        $0.title = "App ID"
+        $0.sortDescriptorPrototype = NSSortDescriptor(
+          keyPath: \ProvisioningProfile.appIdName,
           ascending: true,
           comparator: { a, b in (a as! String).localizedStandardCompare(b as! String) }
         )
@@ -86,16 +105,6 @@ struct ProfilesList: NSViewRepresentable {
     tableView.delegate = context.coordinator
     tableView.tableViewDelegate = context.coordinator
 
-//    let menu = NSMenu()
-//    NSMenuItem.usesUserKeyEquivalents = true
-//    menu.addItem(NSMenuItem(title: "Move to Trash", action: #selector(TableView.tableViewDeleteItemClicked(_:)), keyEquivalent: ""))
-//
-//    let revealFinder = NSMenuItem(title: "Reveal in Finder", action: #selector(TableView.tableViewRevealInFinderItemClicked(_:)), keyEquivalent: "F")
-//
-//    revealFinder.keyEquivalentModifierMask = .command
-//    menu.addItem(revealFinder)
-//    tableView.menu = menu
-
     let scrollView = NSScrollView()
     scrollView.documentView = tableView
     scrollView.hasVerticalScroller = true
@@ -110,9 +119,9 @@ struct ProfilesList: NSViewRepresentable {
     context.coordinator.sortByDescriptors(tableView.sortDescriptors)
     tableView.reloadData()
 
-    if let selectedRow = data.firstIndex(where: { $0.id == selection }) {
-      tableView.selectRowIndexes(IndexSet([selectedRow]), byExtendingSelection: false)
-    }
+    guard !selectionRows.isEmpty else { return }
+
+    tableView.selectRowIndexes(IndexSet(selectionRows), byExtendingSelection: false)
   }
 
   // MARK: - Coordinator
@@ -124,16 +133,28 @@ struct ProfilesList: NSViewRepresentable {
   class TableView: NSTableView {
     weak var tableViewDelegate: TableViewDelegate?
 
-    @objc func tableViewExportItemClicked(_ sender: AnyObject?) {
-      tableViewDelegate?.exportProfile(selectedRow)
+    @objc func copySelectedItemInfoToPasteboard() {
+      tableViewDelegate?.copySelectedItemInfoToPasteboard(self)
     }
 
-    @objc func tableViewDeleteItemClicked(_ sender: AnyObject?) {
-      tableViewDelegate?.moveToTrash(selectedRow)
+    @objc func tableViewExportSelectedItems() {
+      tableViewDelegate?.exportSelectedProfiles(self)
     }
 
-    @objc func tableViewRevealInFinderItemClicked(_ sender: AnyObject?) {
-      tableViewDelegate?.revealInFinder(selectedRow)
+    @objc func tableViewDeleteSelectedItems() {
+      tableViewDelegate?.moveSelectedProfilesToTrash(self)
+    }
+
+    @objc func tableViewRevealSelectedItemsInFinder() {
+      tableViewDelegate?.revealSelectedsInFinder(self)
+    }
+
+    @objc func copySelectedDeviceUDIDsToPasteboard() {
+      tableViewDelegate?.copyDeviceUDIDsPasteboard(self)
+    }
+
+    @objc func copySelectedFileContentsToPasteboard() {
+      tableViewDelegate?.copyFileContentsToPasteboard(self)
     }
   }
 
@@ -154,30 +175,63 @@ struct ProfilesList: NSViewRepresentable {
     }
 
     // MARK: - TableViewDelegate
-    func exportProfile(_ row: Int) {
-      guard let profile = parent.profile(at: row) else { return }
-
-      parent.profilesManager.exportProfile(profile)
+    func copySelectedItemInfoToPasteboard(_ tableView: NSTableView) {
+      guard let profile = parent.profile(at: tableView.selectedRow) else { return }
+      let profileInfos = [
+        profile.name,
+        profile.appIdName,
+        profile.teamName,
+        Self.dateFormatter.string(from: profile.creationDate),
+        Self.dateFormatter.string(from: profile.expirationDate),
+        profile.uuid
+      ]
+      let pasteboard = NSPasteboard.general
+      pasteboard.clearContents()
+      pasteboard.setString(profileInfos.joined(separator: "   "), forType: .string)
     }
 
-    func moveToTrash(_ row: Int) {
-      guard let profile = parent.profile(at: row) else { return }
+    func exportSelectedProfiles(_ tableView: NSTableView) {
+      let profiles = parent.profiles(at: tableView.selectedRowIndexes.indexes)
+      guard !profiles.isEmpty else { return }
 
-      parent.profilesManager.delete(profile: profile)
+      parent.profilesManager.exportProfiles(profiles)
     }
 
-    func revealInFinder(_ row: Int) {
-      guard let profile = parent.profile(at: row) else { return }
+    func moveSelectedProfilesToTrash(_ tableView: NSTableView) {
+      let profiles = parent.profiles(at: tableView.selectedRowIndexes.indexes)
+      guard !profiles.isEmpty else { return }
 
-      parent.profilesManager.revealInFinder(profile: profile)
+      parent.profilesManager.delete(profiles: profiles)
+    }
+
+    func revealSelectedsInFinder(_ tableView: NSTableView) {
+      let profiles = parent.profiles(at: tableView.selectedRowIndexes.indexes)
+      guard !profiles.isEmpty else { return }
+
+      parent.profilesManager.revealInFinder(profiles: profiles)
+    }
+
+    func copyDeviceUDIDsPasteboard(_ tableView: NSTableView) {
+      guard let deviceUDIDs = parent.profile(at: tableView.selectedRow)?.deviceUDIDs else { return }
+
+      let pasteboard = NSPasteboard.general
+      pasteboard.clearContents()
+      pasteboard.setString(deviceUDIDs.joined(separator: "\n"), forType: .string)
+    }
+
+    func copyFileContentsToPasteboard(_ tableView: NSTableView) {
+      guard let fileContents = parent.profile(at: tableView.selectedRow)?.fileContents else { return }
+
+      let pasteboard = NSPasteboard.general
+      pasteboard.clearContents()
+      pasteboard.setString(fileContents, forType: .string)
     }
 
     // MARK: - NSTableViewDelegate
     // MARK: - NSTableViewDataSource
 
     func tableView(_ tableView: NSTableView, viewFor tableColumn: NSTableColumn?, row: Int) -> NSView? {
-      let profile = parent.data[row]
-
+      guard let profile = parent.profile(at: row) else { return nil }
       guard let tableColumn = tableColumn else { return nil }
 
       switch tableColumn.identifier.rawValue {
@@ -201,6 +255,20 @@ struct ProfilesList: NSViewRepresentable {
         textField.isBezeled = false
         textField.drawsBackground = false
         textField.stringValue = profile.name
+        textField.identifier = tableColumn.identifier
+        textField.cell?.truncatesLastVisibleLine = true
+        textField.cell?.lineBreakMode = .byTruncatingTail
+        textField.textColor = profile.expirationDate < Date() ? .systemRed : .labelColor
+        return textField
+
+      case "appid":
+        let textField = NSTextField()
+        textField.cell = VerticallyCenteredTextFieldCell()
+        textField.isEditable = false
+        textField.isSelectable = false
+        textField.isBezeled = false
+        textField.drawsBackground = false
+        textField.stringValue = profile.applicationID ?? profile.appIdName
         textField.identifier = tableColumn.identifier
         textField.cell?.truncatesLastVisibleLine = true
         textField.cell?.lineBreakMode = .byTruncatingTail
@@ -269,15 +337,24 @@ struct ProfilesList: NSViewRepresentable {
     }
 
     func tableViewSelectionDidChange(_ notification: Notification) {
-      let row = (notification.object as! NSTableView).selectedRow
-      guard row != NSNotFound else {
-        parent.selection = nil
+      guard let tableView = notification.object as? NSTableView else { return }
+      guard tableView.selectedRow > 0 else {
+        self.parent.selectionRows = []
+        self.parent.selectedID = nil
         return
       }
-      let element = parent.data[row]
+
+      let selectedRow = tableView.selectedRow
+      var selectedRows = tableView.selectedRowIndexes.indexes
+      guard selectedRows != IndexSet(self.parent.selectionRows).indexes else { return }
 
       DispatchQueue.main.async {
-        self.parent.selection = element.id
+        if let indexSelected = selectedRows.firstIndex(of: selectedRow) {
+          selectedRows.remove(at: indexSelected)
+        }
+        selectedRows.append(selectedRow)
+        self.parent.selectionRows = selectedRows
+        self.parent.selectedID = self.parent.profile(at: selectedRow)?.id
       }
     }
 
@@ -310,9 +387,12 @@ class VerticallyCenteredTextFieldCell : NSTextFieldCell {
 }
 
 protocol TableViewDelegate: AnyObject {
-  func exportProfile(_ row: Int)
-  func moveToTrash(_ row: Int)
-  func revealInFinder(_ row: Int)
+  func copySelectedItemInfoToPasteboard(_ tableView: NSTableView)
+  func exportSelectedProfiles(_ tableView: NSTableView)
+  func moveSelectedProfilesToTrash(_ tableView: NSTableView)
+  func revealSelectedsInFinder(_ tableView: NSTableView)
+  func copyDeviceUDIDsPasteboard(_ tableView: NSTableView)
+  func copyFileContentsToPasteboard(_ tableView: NSTableView)
 }
 
 extension NSTextField {
@@ -350,27 +430,43 @@ extension NSTextField {
     rightMenu.addItem(withTitle: "Export", action: #selector(exportItemClicked(_:)), keyEquivalent: "e")
     rightMenu.addItem(withTitle: "Delete", action: #selector(deleteItemClicked(_:)), keyEquivalent: "d")
     rightMenu.addItem(withTitle: "Reveal in Finder", action: #selector(revealInFinderItemClicked(_:)), keyEquivalent: "f")
+    rightMenu.addItem(.separator())
+    rightMenu.addItem(withTitle: "Copy Device UDIDs", action: #selector(copyDeviceUDIDsClicked(_:)), keyEquivalent: "")
+    rightMenu.addItem(withTitle: "Copy File Contents", action: #selector(copyFileContentsClicked(_:)), keyEquivalent: "")
     NSMenu.popUpContextMenu(rightMenu, with: event, for: self)
   }
 
   @objc private func copyItemClicked(_ sender: AnyObject? = nil) {
-    NSPasteboard.general.clearContents()
-    NSPasteboard.general.setString(self.stringValue, forType: .string)
+//    guard let tblView = self.superview?.superview as? ProfilesList.TableView else { return }
+//    tblView.copySelectedItemInfoToPasteboard()
+    let pasteboard = NSPasteboard.general
+    pasteboard.clearContents()
+    pasteboard.setString(self.stringValue, forType: .string)
   }
 
   @objc private func exportItemClicked(_ sender: AnyObject? = nil) {
     guard let tblView = self.superview?.superview as? ProfilesList.TableView else { return }
-    tblView.tableViewExportItemClicked(sender)
+    tblView.tableViewExportSelectedItems()
   }
 
   @objc private func deleteItemClicked(_ sender: AnyObject? = nil) {
     guard let tblView = self.superview?.superview as? ProfilesList.TableView else { return }
-    tblView.tableViewDeleteItemClicked(sender)
+    tblView.tableViewDeleteSelectedItems()
   }
 
   @objc private func revealInFinderItemClicked(_ sender: AnyObject? = nil) {
     guard let tblView = self.superview?.superview as? ProfilesList.TableView else { return }
-    tblView.tableViewRevealInFinderItemClicked(sender)
+    tblView.tableViewRevealSelectedItemsInFinder()
+  }
+
+  @objc private func copyDeviceUDIDsClicked(_ sender: AnyObject? = nil) {
+    guard let tblView = self.superview?.superview as? ProfilesList.TableView else { return }
+    tblView.copySelectedDeviceUDIDsToPasteboard()
+  }
+
+  @objc private func copyFileContentsClicked(_ sender: AnyObject? = nil) {
+    guard let tblView = self.superview?.superview as? ProfilesList.TableView else { return }
+    tblView.copySelectedFileContentsToPasteboard()
   }
 }
 

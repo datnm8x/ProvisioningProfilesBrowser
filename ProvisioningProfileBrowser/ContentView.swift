@@ -3,10 +3,11 @@ import SwiftUI
 struct ContentView: View {
   @EnvironmentObject var profilesManager: ProvisioningProfilesManager
   @State private var selectedProfile: ProvisioningProfile.ID?
+  @State private var selectionRows: [Int] = []
 
   var body: some View {
     VSplitView {
-      ProfilesList(data: $profilesManager.visibleProfiles, selection: $selectedProfile)
+      ProfilesList(data: $profilesManager.visibleProfiles, selectedID: $selectedProfile, selectionRows: $selectionRows)
 
       if let selectedProfile = selectedProfile,
          let url = profilesManager.visibleProfiles.first(where: { $0.id == selectedProfile })?.url {
