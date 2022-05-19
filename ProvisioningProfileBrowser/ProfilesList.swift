@@ -338,7 +338,7 @@ struct ProfilesList: NSViewRepresentable {
 
     func tableViewSelectionDidChange(_ notification: Notification) {
       guard let tableView = notification.object as? NSTableView else { return }
-      guard tableView.selectedRow > 0 else {
+      guard tableView.selectedRow >= 0 else {
         self.parent.selectionRows = []
         self.parent.selectedID = nil
         return

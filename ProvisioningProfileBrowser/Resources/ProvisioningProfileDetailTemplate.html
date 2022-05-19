@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+      <title></title>
+      <style>
+        table {
+          border-collapse: collapse;
+          width: 100%;
+        }
+        .center {
+          text-align: center;
+          margin: 0;
+          padding: 0;
+        }
+        .col_left {
+          width: 35%;
+          text-align: right;
+          margin: 0;
+          padding: 0;
+          font-size: 18px;
+          color: #AAAAAA;
+          vertical-align: top;
+        }
+        .col_right {
+          text-align: left;
+          margin: 0;
+          padding: 0;
+          font-size: 18px;
+          padding-left: 16px;
+          vertical-align: top;
+        }
+        .fileInfo {
+          position: absolute;
+          right: 10px;
+          width: 30%;
+          <!--          border: 1.5px solid #73AD21;-->
+          padding: 10px;
+        }
+
+        h1 {
+          font-size: 18px;
+        }
+
+        h2 {
+          font-size: 18px;
+          text-transform: uppercase;
+        }
+
+        .expired {
+          color: darkred;
+        }
+        .expiring {
+          color: #996600;
+        }
+        .valid {
+          color: darkgreen;
+        }
+
+        .deviceType {
+          color: #aaa;
+          font-size: 11px;
+        }
+      </style>
+  </head>
+
+  <body>
+    <div class="center">
+      <h1><span class="__ExpStatus__">__Name__</span></h1>
+      <h1>Expiration Date: __ExpirationDateFormatted__ (__ExpirationSummary__)</h1>
+    </div>
+
+    <table>
+      __ProvisionGeneralInfoFormatted__
+    </table>
+
+    <hr></hr>
+
+    <h2>Entitlements</h2>
+    <table>
+      __EntitlementsFormatted__
+    </table>
+
+    <hr></hr>
+
+    <h2>Developer Certificates</h2>
+    <table>
+      __DeveloperCertificatesFormatted__
+    </table>
+
+    __ProvisionedDevicesFormatted__
+
+    <table class="fileInfo"><tr><td>
+      <h2>File info</h2>
+      __FileName__<br />
+      __FileInfo__<br />
+      <p>ProvisioningProfileBrowser v__BundleShortVersionString__ (__BundleVersion__) by @datnm8x (<a href="https://github.com/datnm8x/ProvisioningProfilesBrowser">Open GitHub</a>)</p>
+    </tr></td></table>
+  </body>
+</html>
+
+

@@ -1,6 +1,4 @@
 import Foundation
-import SwiftyProvisioningProfile
-import Witness
 import AppKit
 
 class ProvisioningProfilesManager: ObservableObject {
@@ -58,13 +56,14 @@ class ProvisioningProfilesManager: ObservableObject {
       var profiles = [ProvisioningProfile]()
       for case let url as URL in enumerator {
         let profileData = try Data(contentsOf: url)
-        let profile = try SwiftyProvisioningProfile.ProvisioningProfile.parse(from: profileData)
+        let profile = try SwiftyModule.ProvisioningProfile.parse(from: profileData)
         profiles.append(profile.toProfile(url: url))
       }
 
       self.loading = false
       self.profiles = profiles
     } catch {
+      print(error)
       self.loading = false
       self.error = error
     }
@@ -164,16 +163,9 @@ extension ProvisioningProfilesManager {
   }
 }
 
-extension SwiftyProvisioningProfile.ProvisioningProfile {
-  var applicationID: String? {
-    guard let result = entitlements["application-identifier"] else { return nil }
-    switch result {
-    case .string(let value): return value
-    default: return nil
-    }
-  }
+extension SwiftyModule.ProvisioningProfile {
 
-  fileprivate func toProfile(url: URL) -> ProvisioningProfile {
+  func toProfile(url: URL) -> ProvisioningProfile {
 
     ProvisioningProfile(
       url: url,
@@ -181,10 +173,18 @@ extension SwiftyProvisioningProfile.ProvisioningProfile {
       name: name,
       appIdName: appIdName,
       teamName: teamName,
+      teamID: teamID,
+      platforms: platforms,
       creationDate: creationDate,
       expirationDate: expirationDate,
       applicationID: applicationID,
-      deviceUDIDs: provisionedDevices
+      deviceUDIDs: provisionedDevices,
+      provisionsAllDevices: provisionsAllDevices ?? false,
+      getTaskAllow: getTaskAllow,
+      keychainAccessGroups: keychainAccessGroups,
+      certificates: developerCertificates.compactMap({ $0.certificate }),
+      apsEnvironment: apsEnvironment,
+      securityApplicationGroups: securityApplicationGroups
     )
   }
 }

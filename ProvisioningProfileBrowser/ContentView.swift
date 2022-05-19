@@ -2,19 +2,19 @@ import SwiftUI
 
 struct ContentView: View {
   @EnvironmentObject var profilesManager: ProvisioningProfilesManager
-  @State private var selectedProfile: ProvisioningProfile.ID?
+  @State private var selectedProfileID: ProvisioningProfile.ID?
   @State private var selectionRows: [Int] = []
 
   var body: some View {
     VSplitView {
-      ProfilesList(data: $profilesManager.visibleProfiles, selectedID: $selectedProfile, selectionRows: $selectionRows)
+      ProfilesList(data: $profilesManager.visibleProfiles, selectedID: $selectedProfileID, selectionRows: $selectionRows)
 
-      if let selectedProfile = selectedProfile,
-         let url = profilesManager.visibleProfiles.first(where: { $0.id == selectedProfile })?.url {
-        if let htmlString = GenerateHTMLForProfile.generateHTMLPreview(forProfileURL: url) {
+      if let selectedProfileID = selectedProfileID,
+         let profile = profilesManager.visibleProfiles.first(where: { $0.id == selectedProfileID }) {
+        if let htmlString = GenerateHTMLForProfile.generateHTMLPreviewForProfile(profile) {
           ProfilePreviewView(htmlString: htmlString)
         } else {
-          QuickLookPreview(url: url)
+          QuickLookPreview(url: profile.url)
         }
       } else {
         Color(.windowBackgroundColor)
