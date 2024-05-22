@@ -2,6 +2,22 @@ import Foundation
 
 @objcMembers
 class ProvisioningProfile: NSObject {
+//  enum CodingKeys: String, CodingKey {
+//    case appIdName = "AppIDName"
+//    case applicationIdentifierPrefixs = "ApplicationIdentifierPrefix"
+//    case creationDate = "CreationDate"
+//    case platforms = "Platform"
+//    case expirationDate = "ExpirationDate"
+//    case name = "Name"
+//    case provisionedDevices = "ProvisionedDevices"
+//    case teamIdentifiers = "TeamIdentifier"
+//    case teamName = "TeamName"
+//    case timeToLive = "TimeToLive"
+//    case uuid = "UUID"
+//    case version = "Version"
+//    case entitlements = "Entitlements"
+//  }
+
   var url: URL
   var uuid: String
   var name: String

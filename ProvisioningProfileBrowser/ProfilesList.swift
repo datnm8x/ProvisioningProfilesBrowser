@@ -338,7 +338,7 @@ struct ProfilesList: NSViewRepresentable {
 
     func tableViewSelectionDidChange(_ notification: Notification) {
       guard let tableView = notification.object as? NSTableView else { return }
-      guard tableView.selectedRow > 0 else {
+      guard tableView.selectedRow >= 0 else {
         self.parent.selectionRows = []
         self.parent.selectedID = nil
         return
@@ -477,8 +477,12 @@ extension NSTableView {
     let col = self.column(at: point)
     guard row >= 0, row < self.numberOfRows, col >= 0, col < self.numberOfColumns else { return }
     guard isRowSelected(row) else { return }
-    guard let cellView = self.view(atColumn: col, row: row, makeIfNecessary: false) as? NSTableCellView else { return }
+    guard let textField = self.view(atColumn: col, row: row, makeIfNecessary: false) as? NSTextField else {
+      guard let cellView = self.view(atColumn: col, row: row, makeIfNecessary: false) as? NSTableCellView else { return }
 
-    cellView.textField?.rightMouseDown(with: event)
+      cellView.textField?.rightMouseDown(with: event)
+      return
+    }
+    textField.rightMouseDown(with: event)
   }
 }

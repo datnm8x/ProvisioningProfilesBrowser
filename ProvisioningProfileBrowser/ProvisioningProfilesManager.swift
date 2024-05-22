@@ -2,18 +2,15 @@ import Foundation
 import SwiftyProvisioningProfile
 import Witness
 import AppKit
+import UniformTypeIdentifiers
 
 class ProvisioningProfilesManager: ObservableObject {
-  @Published var profiles = [ProvisioningProfile]() {
-    didSet {
-      updateVisibleProfiles(query: query)
-    }
-  }
+  @Published var profiles = [ProvisioningProfile]()
   @Published var visibleProfiles: [ProvisioningProfile] = []
   @Published var loading = false
   @Published var query = "" {
     didSet {
-      updateVisibleProfiles(query: query)
+      updateVisibleProfiles()
     }
   }
   @Published var error: Error?
@@ -64,6 +61,7 @@ class ProvisioningProfilesManager: ObservableObject {
 
       self.loading = false
       self.profiles = profiles
+      self.updateVisibleProfiles()
     } catch {
       self.loading = false
       self.error = error
@@ -91,13 +89,14 @@ class ProvisioningProfilesManager: ObservableObject {
       do {
         try FileManager.default.trashItem(at: profile.url, resultingItemURL: nil)
         self.profiles.removeAll { $0 == profile }
+        self.updateVisibleProfiles()
       } catch {
         print(error.localizedDescription)
       }
     }
   }
 
-  private func updateVisibleProfiles(query: String) {
+  private func updateVisibleProfiles() {
     if query.isEmpty {
       visibleProfiles = profiles
     } else {
@@ -121,7 +120,7 @@ class ProvisioningProfilesManager: ObservableObject {
     let savePanel = NSSavePanel()
     savePanel.canCreateDirectories = true
     savePanel.nameFieldStringValue = profiles.map({ $0.name }).joined(separator: ", ")
-    savePanel.allowedFileTypes = ["mobileprovision"]
+    savePanel.allowedContentTypes = [UTType(tag: "mobileprovision", tagClass: .filenameExtension, conformingTo: .compositeContent)!]
     savePanel.prompt = "Export"
     savePanel.title = "Export Provisioning Files (replace if exits)"
     savePanel.directoryURL = Self.desktopUrl
