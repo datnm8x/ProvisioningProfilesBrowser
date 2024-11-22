@@ -19,6 +19,8 @@
 		CA0526FE25CB9C1B000D9F9A /* ProvisioningProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA0526FD25CB9C1B000D9F9A /* ProvisioningProfile.swift */; };
 		CA05270325CBA035000D9F9A /* Optional+IsNotNil.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA05270225CBA035000D9F9A /* Optional+IsNotNil.swift */; };
 		CA05270725CBA2A1000D9F9A /* Witness in Frameworks */ = {isa = PBXBuildFile; productRef = CA05270625CBA2A1000D9F9A /* Witness */; };
+		F62B305B2CF0139D00979B37 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = F62B305A2CF0139D00979B37 /* Utils.swift */; };
+		F64EFE3D2CF058D500B47086 /* KeyboardShortcuts in Frameworks */ = {isa = PBXBuildFile; productRef = F64EFE3C2CF058D500B47086 /* KeyboardShortcuts */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -35,6 +37,7 @@
 		CA0526F925CB9857000D9F9A /* Configure.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Configure.swift; sourceTree = "<group>"; };
 		CA0526FD25CB9C1B000D9F9A /* ProvisioningProfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProvisioningProfile.swift; sourceTree = "<group>"; };
 		CA05270225CBA035000D9F9A /* Optional+IsNotNil.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Optional+IsNotNil.swift"; sourceTree = "<group>"; };
+		F62B305A2CF0139D00979B37 /* Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -44,6 +47,7 @@
 			files = (
 				CA05270725CBA2A1000D9F9A /* Witness in Frameworks */,
 				CA0526EE25CB9678000D9F9A /* SwiftyProvisioningProfile in Frameworks */,
+				F64EFE3D2CF058D500B47086 /* KeyboardShortcuts in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -77,6 +81,7 @@
 				CA0526D725C4F479000D9F9A /* ProvisioningProfileBrowserApp.swift */,
 				CA0526F025CB96B1000D9F9A /* ProvisioningProfilesManager.swift */,
 				CA0526F625CB97F9000D9F9A /* QuickLookPreview.swift */,
+				F62B305A2CF0139D00979B37 /* Utils.swift */,
 				CA0526DB25C4F47A000D9F9A /* Assets.xcassets */,
 				CA0526E025C4F47B000D9F9A /* Info.plist */,
 				CA0526E125C4F47B000D9F9A /* ProvisioningProfileBrowser.entitlements */,
@@ -112,6 +117,7 @@
 			packageProductDependencies = (
 				CA0526ED25CB9678000D9F9A /* SwiftyProvisioningProfile */,
 				CA05270625CBA2A1000D9F9A /* Witness */,
+				F64EFE3C2CF058D500B47086 /* KeyboardShortcuts */,
 			);
 			productName = ProvisioningProfileBrowser;
 			productReference = CA0526D425C4F479000D9F9A /* Provisioning Profile Browser.app */;
@@ -123,9 +129,8 @@
 		CA0526CC25C4F479000D9F9A /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				BuildIndependentTargetsInParallel = YES;
 				LastSwiftUpdateCheck = 1240;
-				LastUpgradeCheck = 1540;
+				LastUpgradeCheck = 1240;
 				TargetAttributes = {
 					CA0526D325C4F479000D9F9A = {
 						CreatedOnToolsVersion = 12.4;
@@ -144,6 +149,7 @@
 			packageReferences = (
 				CA0526EC25CB9678000D9F9A /* XCRemoteSwiftPackageReference "SwiftProvisioningProfile" */,
 				CA05270525CBA2A1000D9F9A /* XCRemoteSwiftPackageReference "witness" */,
+				F64EFE3B2CF058D500B47086 /* XCRemoteSwiftPackageReference "KeyboardShortcuts" */,
 			);
 			productRefGroup = CA0526D525C4F479000D9F9A /* Products */;
 			projectDirPath = "";
@@ -173,6 +179,7 @@
 			files = (
 				CA0526F725CB97F9000D9F9A /* QuickLookPreview.swift in Sources */,
 				CA0526F125CB96B1000D9F9A /* ProvisioningProfilesManager.swift in Sources */,
+				F62B305B2CF0139D00979B37 /* Utils.swift in Sources */,
 				CA0526FA25CB9857000D9F9A /* Configure.swift in Sources */,
 				CA05270325CBA035000D9F9A /* Optional+IsNotNil.swift in Sources */,
 				CA0526DA25C4F479000D9F9A /* ContentView.swift in Sources */,
@@ -219,11 +226,9 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
-				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
-				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -238,7 +243,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 11.1;
+				MACOSX_DEPLOYMENT_TARGET = 14.6;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -282,11 +287,9 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
-				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -295,7 +298,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 11.1;
+				MACOSX_DEPLOYMENT_TARGET = 14.6;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = macosx;
@@ -312,7 +315,6 @@
 				CODE_SIGN_ENTITLEMENTS = ProvisioningProfileBrowser/ProvisioningProfileBrowser.entitlements;
 				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
-				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"ProvisioningProfileBrowser/Preview Content\"";
 				DEVELOPMENT_TEAM = "";
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -322,8 +324,8 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 14.0;
-				PRODUCT_BUNDLE_IDENTIFIER = exv.vn.ProvisioningProfileBrowser;
+				MACOSX_DEPLOYMENT_TARGET = 14.6;
+				PRODUCT_BUNDLE_IDENTIFIER = ca.brandonevans.ProvisioningProfileBrowser;
 				PRODUCT_NAME = "Provisioning Profile Browser";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 5.0;
@@ -338,7 +340,6 @@
 				CODE_SIGN_ENTITLEMENTS = ProvisioningProfileBrowser/ProvisioningProfileBrowser.entitlements;
 				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
-				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"ProvisioningProfileBrowser/Preview Content\"";
 				DEVELOPMENT_TEAM = "";
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -348,8 +349,8 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 14.0;
-				PRODUCT_BUNDLE_IDENTIFIER = exv.vn.ProvisioningProfileBrowser;
+				MACOSX_DEPLOYMENT_TARGET = 14.6;
+				PRODUCT_BUNDLE_IDENTIFIER = ca.brandonevans.ProvisioningProfileBrowser;
 				PRODUCT_NAME = "Provisioning Profile Browser";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 5.0;
@@ -396,6 +397,14 @@
 				revision = b0469457b460fc78620e3b456fed9b18669100d5;
 			};
 		};
+		F64EFE3B2CF058D500B47086 /* XCRemoteSwiftPackageReference "KeyboardShortcuts" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/sindresorhus/KeyboardShortcuts";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.2.2;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -408,6 +417,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = CA05270525CBA2A1000D9F9A /* XCRemoteSwiftPackageReference "witness" */;
 			productName = Witness;
+		};
+		F64EFE3C2CF058D500B47086 /* KeyboardShortcuts */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = F64EFE3B2CF058D500B47086 /* XCRemoteSwiftPackageReference "KeyboardShortcuts" */;
+			productName = KeyboardShortcuts;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

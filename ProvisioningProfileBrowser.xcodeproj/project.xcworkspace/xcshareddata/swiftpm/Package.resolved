@@ -1,25 +1,32 @@
 {
-  "object": {
-    "pins": [
-      {
-        "package": "SwiftyProvisioningProfile",
-        "repositoryURL": "https://github.com/Sherlouk/SwiftProvisioningProfile",
-        "state": {
-          "branch": null,
-          "revision": "5868407dac78538bab3dbf3a55c06f7b96f25b67",
-          "version": "2.0.1"
-        }
-      },
-      {
-        "package": "Witness",
-        "repositoryURL": "https://github.com/njdehoog/witness.git",
-        "state": {
-          "branch": null,
-          "revision": "b0469457b460fc78620e3b456fed9b18669100d5",
-          "version": null
-        }
+  "originHash" : "d031fcf4c0d4bfa36976e63ca26d23d5f815da9978c7667a2fffb7ad181346d9",
+  "pins" : [
+    {
+      "identity" : "keyboardshortcuts",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/sindresorhus/KeyboardShortcuts",
+      "state" : {
+        "revision" : "c3c361f409b8dbe1eab186078b41c330a6a82c9a",
+        "version" : "2.2.2"
       }
-    ]
-  },
-  "version": 1
+    },
+    {
+      "identity" : "swiftprovisioningprofile",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/Sherlouk/SwiftProvisioningProfile",
+      "state" : {
+        "revision" : "5868407dac78538bab3dbf3a55c06f7b96f25b67",
+        "version" : "2.0.1"
+      }
+    },
+    {
+      "identity" : "witness",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/njdehoog/witness.git",
+      "state" : {
+        "revision" : "b0469457b460fc78620e3b456fed9b18669100d5"
+      }
+    }
+  ],
+  "version" : 3
 }

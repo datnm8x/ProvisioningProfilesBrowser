@@ -21,7 +21,6 @@
 	<key>LSMinimumSystemVersion</key>
 	<string>$(MACOSX_DEPLOYMENT_TARGET)</string>
 	<key>NSHumanReadableCopyright</key>
-	<string>Copyright © 2022 datnm
-datnm8x@gmail.com</string>
+	<string>Copyright © 2021 Brandon Evans</string>
 </dict>
 </plist>

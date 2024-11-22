@@ -2,22 +2,26 @@ import SwiftUI
 import Quartz
 
 struct QuickLookPreview: NSViewRepresentable {
-  typealias NSViewType = ProfilePreviewView
+    typealias NSViewType = QLPreviewView
+    
+    private let url: URL
 
-  var url: URL
+    init(url: URL) {
+        self.url = url
+    }
 
-  func makeNSView(context: Context) -> NSViewType {
-    let preview = ProfilePreviewView(frame: .zero, style: .compact)
-    preview?.autostarts = true
-    preview?.previewItem = url as QLPreviewItem
-    return preview ?? ProfilePreviewView(frame: .zero, style: .compact)
-  }
+    func makeNSView(context: Context) -> NSViewType {
+        let preview = ProfileQLPreviewView(frame: .zero, style: .normal)
+        preview?.autostarts = true
+        preview?.previewItem = url as QLPreviewItem
+        return preview ?? ProfileQLPreviewView()
+    }
 
-  func updateNSView(_ nsView: NSViewType, context: Context) {
-    nsView.previewItem = url as QLPreviewItem
-  }
+    func updateNSView(_ nsView: NSViewType, context: Context) {
+        nsView.previewItem = url as QLPreviewItem
+    }
 }
 
-class ProfilePreviewView: QLPreviewView {
-  
+class ProfileQLPreviewView: QLPreviewView {
+    override var isSelectable: Bool { true }
 }
