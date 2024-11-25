@@ -1,5 +1,5 @@
 {
-  "originHash" : "d031fcf4c0d4bfa36976e63ca26d23d5f815da9978c7667a2fffb7ad181346d9",
+  "originHash" : "57babb80bad6d57d52ca56a383f41afd49b2decd9300745e3e69ca0cbfae156b",
   "pins" : [
     {
       "identity" : "keyboardshortcuts",
@@ -8,15 +8,6 @@
       "state" : {
         "revision" : "c3c361f409b8dbe1eab186078b41c330a6a82c9a",
         "version" : "2.2.2"
-      }
-    },
-    {
-      "identity" : "swiftprovisioningprofile",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/Sherlouk/SwiftProvisioningProfile",
-      "state" : {
-        "revision" : "5868407dac78538bab3dbf3a55c06f7b96f25b67",
-        "version" : "2.0.1"
       }
     },
     {

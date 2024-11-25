@@ -3,7 +3,7 @@ import QuickLook
 
 struct ContentView: View {
     @EnvironmentObject var profilesManager: ProvisioningProfilesManager
-    @State private var selectedProfile: ProvisioningProfile.ID?
+    @State private var selectedProfile: ProvisioningProfileModel.ID?
     
     var body: some View {
         VSplitView {

@@ -1,15 +1,14 @@
 import Foundation
-import SwiftyProvisioningProfile
 import Witness
 import AppKit
 
 class ProvisioningProfilesManager: ObservableObject {
-    @Published var profiles = [ProvisioningProfile]() {
+    @Published var profiles = [ProvisioningProfileModel]() {
         didSet {
             updateVisibleProfiles(query: query)
         }
     }
-    @Published var visibleProfiles: [ProvisioningProfile] = []
+    @Published var visibleProfiles: [ProvisioningProfileModel] = []
     @Published var loading = false
     @Published var query = "" {
         didSet {
@@ -57,19 +56,23 @@ class ProvisioningProfilesManager: ObservableObject {
                 errorHandler: nil
             )!
             
-            var profiles = [ProvisioningProfile]()
+            var profiles = [ProvisioningProfileModel]()
             for case let url as URL in enumerator {
                 let profileData = try Data(contentsOf: url)
-                let profile = try SwiftyProvisioningProfile.ProvisioningProfile.parse(from: profileData)
+                let profile = try ProvisioningProfile.parse(from: profileData)
+
+                print("Cers is missing: \(profile.isMissingCers) - \(profile.name)")
+
                 profiles.append(
-                    ProvisioningProfile(
+                    ProvisioningProfileModel(
                         url: url,
                         uuid: profile.uuid,
                         name: profile.name,
                         teamName: profile.teamName,
                         creationDate: profile.creationDate,
                         expirationDate: profile.expirationDate,
-                        appID: profile.appID
+                        appID: profile.appID,
+                        isMissingCers: profile.isMissingCers
                     )
                 )
             }
@@ -82,7 +85,7 @@ class ProvisioningProfilesManager: ObservableObject {
         }
     }
     
-    func delete(profile: ProvisioningProfile) {
+    func delete(profile: ProvisioningProfileModel) {
         do {
             try FileManager.default.trashItem(at: profile.url, resultingItemURL: nil)
             profiles.removeAll { $0 == profile }
@@ -91,7 +94,7 @@ class ProvisioningProfilesManager: ObservableObject {
         }
     }
 
-    func revealFinder(profile: ProvisioningProfile) {
+    func revealFinder(profile: ProvisioningProfileModel) {
         NSWorkspace.shared.activateFileViewerSelecting([profile.url])
     }
 
@@ -105,31 +108,5 @@ class ProvisioningProfilesManager: ObservableObject {
                     $0.uuid.localizedCaseInsensitiveContains(query)
             }
         }
-    }
-}
-
-extension PropertyListDictionaryValue {
-    var value: Any? {
-        switch self {
-        case .string(let string): return string
-        case .array(let array): return array.map({ $0.value })
-        case .bool(let bool): return bool
-        case .unknown: return nil
-        }
-    }
-
-    var string: String? {
-        switch self {
-        case .string(let string): return string
-        case .array(let array): return array.compactMap({ $0.value as? String }).joined(separator: "\n")
-        case .bool(let bool): return bool ? "true" : "false"
-        case .unknown: return nil
-        }
-    }
-}
-
-extension SwiftyProvisioningProfile.ProvisioningProfile {
-    var appID: String {
-        entitlements["application-identifier"]?.string ?? ""
     }
 }

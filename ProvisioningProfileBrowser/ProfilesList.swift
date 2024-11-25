@@ -5,11 +5,11 @@ import KeyboardShortcuts
 struct ProfilesList: NSViewRepresentable {
     typealias NSViewType = NSScrollView
 
-    @Binding var data: [ProvisioningProfile]
-    @Binding var selection: ProvisioningProfile.ID?
+    @Binding var data: [ProvisioningProfileModel]
+    @Binding var selection: ProvisioningProfileModel.ID?
     @EnvironmentObject var profilesManager: ProvisioningProfilesManager
     
-    init(data: Binding<[ProvisioningProfile]>, selection: Binding<ProvisioningProfile.ID?>) {
+    init(data: Binding<[ProvisioningProfileModel]>, selection: Binding<ProvisioningProfileModel.ID?>) {
         self._data = data
         self._selection = selection
     }
@@ -29,7 +29,7 @@ struct ProfilesList: NSViewRepresentable {
                 $0.title = "Name"
                 $0.width = 200
                 $0.sortDescriptorPrototype = NSSortDescriptor(
-                    keyPath: \ProvisioningProfile.name,
+                    keyPath: \ProvisioningProfileModel.name,
                     ascending: true,
                     comparator: { a, b in (a as! String).localizedStandardCompare(b as! String) }
                 )
@@ -37,7 +37,7 @@ struct ProfilesList: NSViewRepresentable {
             configure(NSTableColumn(identifier: .init("team"))) {
                 $0.title = "Team Name"
                 $0.sortDescriptorPrototype = NSSortDescriptor(
-                    keyPath: \ProvisioningProfile.teamName,
+                    keyPath: \ProvisioningProfileModel.teamName,
                     ascending: true,
                     comparator: { a, b in (a as! String).localizedStandardCompare(b as! String) }
                 )
@@ -45,7 +45,7 @@ struct ProfilesList: NSViewRepresentable {
             configure(NSTableColumn(identifier: .init("appid"))) {
                 $0.title = "App ID"
                 $0.sortDescriptorPrototype = NSSortDescriptor(
-                    keyPath: \ProvisioningProfile.appID,
+                    keyPath: \ProvisioningProfileModel.appID,
                     ascending: true,
                     comparator: { a, b in (a as! String).localizedStandardCompare(b as! String) }
                 )
@@ -53,7 +53,7 @@ struct ProfilesList: NSViewRepresentable {
             configure(NSTableColumn(identifier: .init("creation"))) {
                 $0.title = "Creation Date"
                 $0.sortDescriptorPrototype = NSSortDescriptor(
-                    keyPath: \ProvisioningProfile.creationDate,
+                    keyPath: \ProvisioningProfileModel.creationDate,
                     ascending: true,
                     comparator: { a, b in (a as! Date).compare(b as! Date) }
                 )
@@ -61,7 +61,7 @@ struct ProfilesList: NSViewRepresentable {
             configure(NSTableColumn(identifier: .init("expiry"))) {
                 $0.title = "Expiry Date"
                 $0.sortDescriptorPrototype = NSSortDescriptor(
-                    keyPath: \ProvisioningProfile.expirationDate,
+                    keyPath: \ProvisioningProfileModel.expirationDate,
                     ascending: true,
                     comparator: { a, b in (a as! Date).compare(b as! Date) }
                 )
@@ -69,7 +69,7 @@ struct ProfilesList: NSViewRepresentable {
             configure(NSTableColumn(identifier: .init("uuid"))) {
                 $0.title = "UUID"
                 $0.sortDescriptorPrototype = NSSortDescriptor(
-                    keyPath: \ProvisioningProfile.uuid,
+                    keyPath: \ProvisioningProfileModel.uuid,
                     ascending: true,
                     comparator: { a, b in (a as! String).localizedStandardCompare(b as! String) }
                 )
@@ -291,9 +291,9 @@ struct ProfilesList: NSViewRepresentable {
         func sortByDescriptors(_ sortDescriptors: [NSSortDescriptor]) {
             let elementsAsMutableArray = NSMutableArray(array: parent.data)
             elementsAsMutableArray.sort(using: sortDescriptors)
-            if (elementsAsMutableArray as! [ProvisioningProfile]) != parent.data {
+            if (elementsAsMutableArray as! [ProvisioningProfileModel]) != parent.data {
                 DispatchQueue.main.async {
-                    self.parent.data = elementsAsMutableArray as! [ProvisioningProfile]
+                    self.parent.data = elementsAsMutableArray as! [ProvisioningProfileModel]
                 }
             }
         }

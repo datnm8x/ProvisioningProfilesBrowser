@@ -24,4 +24,5 @@ struct QuickLookPreview: NSViewRepresentable {
 
 class ProfileQLPreviewView: QLPreviewView {
     override var isSelectable: Bool { true }
+    override func becomeFirstResponder() -> Bool { true }
 }

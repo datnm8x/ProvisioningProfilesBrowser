@@ -1,7 +1,7 @@
 import Foundation
 
 @objcMembers
-class ProvisioningProfile: NSObject {
+class ProvisioningProfileModel: NSObject {
     var url: URL
     var uuid: String
     var name: String
@@ -9,6 +9,7 @@ class ProvisioningProfile: NSObject {
     var creationDate: Date
     var expirationDate: Date
     var appID: String
+    var isMissingCers: Bool
 
     init(
         url: URL,
@@ -17,7 +18,8 @@ class ProvisioningProfile: NSObject {
         teamName: String,
         creationDate: Date,
         expirationDate: Date,
-        appID: String
+        appID: String,
+        isMissingCers: Bool
     ) {
         self.url = url
         self.uuid = uuid
@@ -26,15 +28,16 @@ class ProvisioningProfile: NSObject {
         self.creationDate = creationDate
         self.expirationDate = expirationDate
         self.appID = appID
+        self.isMissingCers = isMissingCers
     }
 }
 
-extension ProvisioningProfile: Identifiable {
+extension ProvisioningProfileModel: Identifiable {
     public var id: String { uuid }
 }
 
-extension ProvisioningProfile {
-    static func == (lhs: ProvisioningProfile, rhs: ProvisioningProfile) -> Bool {
+extension ProvisioningProfileModel {
+    static func == (lhs: ProvisioningProfileModel, rhs: ProvisioningProfileModel) -> Bool {
         lhs.url == rhs.url &&
             lhs.uuid == rhs.uuid &&
             lhs.name == rhs.name &&
