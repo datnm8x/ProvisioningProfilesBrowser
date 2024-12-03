@@ -10,10 +10,12 @@ struct ContentView: View {
             ProfilesList(data: $profilesManager.visibleProfiles, selection: $selectedProfile)
             
             if let selectedProfile = selectedProfile,
-               let url = profilesManager.visibleProfiles.first(where: { $0.id == selectedProfile })?.url {
-                QuickLookPreview(url: url)
+               let profile = profilesManager.visibleProfiles.first(where: { $0.id == selectedProfile }) {
+                ProvisioningPreview(profile: profile)
+//                QuickLookPreview(url: profile.url)
+                    .frame(width: NSApplication.contentViewBounds.width, height: NSApplication.contentViewBounds.height/2)
             } else {
-                Color(.windowBackgroundColor)
+                Color(.clear).frame(height: 0)
             }
         }
         .onAppear(perform: profilesManager.reload)
@@ -25,11 +27,17 @@ struct ContentView: View {
                 dismissButton: Alert.Button.default(Text("OK"))
             )
         }
-    }    
+    }
 }
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         ContentView()
+    }
+}
+
+extension NSApplication {
+    static var contentViewBounds: NSSize {
+        NSSize(width: shared.keyWindow?.contentView?.bounds.width ?? 0, height: shared.keyWindow?.contentView?.bounds.height ?? 0)
     }
 }

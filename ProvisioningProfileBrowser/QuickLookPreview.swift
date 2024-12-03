@@ -1,9 +1,10 @@
 import SwiftUI
 import Quartz
+import WebKit
 
 struct QuickLookPreview: NSViewRepresentable {
     typealias NSViewType = QLPreviewView
-    
+
     private let url: URL
 
     init(url: URL) {
@@ -11,10 +12,9 @@ struct QuickLookPreview: NSViewRepresentable {
     }
 
     func makeNSView(context: Context) -> NSViewType {
-        let preview = ProfileQLPreviewView(frame: .zero, style: .normal)
-        preview?.autostarts = true
-        preview?.previewItem = url as QLPreviewItem
-        return preview ?? ProfileQLPreviewView()
+        let preview = ProfileQLPreviewView()
+        preview.previewItem = url as QLPreviewItem
+        return preview
     }
 
     func updateNSView(_ nsView: NSViewType, context: Context) {

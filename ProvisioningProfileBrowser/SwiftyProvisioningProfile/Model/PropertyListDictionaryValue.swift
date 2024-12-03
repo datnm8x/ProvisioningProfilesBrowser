@@ -60,7 +60,7 @@ public enum PropertyListDictionaryValue: Codable, Equatable {
     var string: String? {
         switch self {
         case .string(let string): return string
-        case .array(let array): return array.compactMap({ $0.value as? String }).joined(separator: "\n")
+        case .array(let array): return array.compactMap({ $0.value as? String }).joined(separator: ", ")
         case .bool(let bool): return bool ? "true" : "false"
         case .unknown: return nil
         }

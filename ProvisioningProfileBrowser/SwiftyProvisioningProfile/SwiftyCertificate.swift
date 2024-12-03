@@ -33,7 +33,13 @@ public extension Certificate {
         var commonName: CFString?
         SecCertificateCopyCommonName(certificate, &commonName)
         
-        return try Certificate(results: valuesDict, commonName: commonName as String?, isValidPrivateKey: certificate.clientIdentity?.privateKey != nil)
+        return try Certificate(
+            results: valuesDict,
+            commonName: commonName as String?,
+            hasPrivateKey: certificate.clientIdentity?.privateKey != nil,
+            sha1: certificate.sha1,
+            sha256: certificate.sha256
+        )
     }
     
     private static func getSecCertificate(data: Data) throws -> SecCertificate {
@@ -44,7 +50,7 @@ public extension Certificate {
         return certificate
     }
 
-    var isMissing: Bool { notValidAfter < .now || notValidBefore > .now || !isInKeyChain || !isValidPrivateKey }
+    var isMissing: Bool { notValidAfter < .now || notValidBefore > .now || !isInKeyChain || !hasPrivateKey }
 
     static func queryCertificateFromKeyChain(commonName: String?) -> Bool{
         guard let commonName else { return false }

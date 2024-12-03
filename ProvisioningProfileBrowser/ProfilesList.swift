@@ -8,7 +8,7 @@ struct ProfilesList: NSViewRepresentable {
     @Binding var data: [ProvisioningProfileModel]
     @Binding var selection: ProvisioningProfileModel.ID?
     @EnvironmentObject var profilesManager: ProvisioningProfilesManager
-    
+
     init(data: Binding<[ProvisioningProfileModel]>, selection: Binding<ProvisioningProfileModel.ID?>) {
         self._data = data
         self._selection = selection
@@ -104,9 +104,9 @@ struct ProfilesList: NSViewRepresentable {
     }
 
     func updateNSView(_ nsView: NSViewType, context: Context) {
+        guard let tableView = nsView.documentView as? NSTableView else { return }
+
         context.coordinator.parent = self
-        let tableView = nsView.subviews[1].subviews[0] as! NSTableView
-        
         context.coordinator.sortByDescriptors(tableView.sortDescriptors)
         tableView.reloadData()
         
@@ -162,7 +162,6 @@ struct ProfilesList: NSViewRepresentable {
             let profile = parent.data[row]
             let alertView = NSAlert()
             alertView.messageText = "Do you want to delete \"\(profile.name)\" provisioning file?"
-//            alertView.informativeText = profiles.map({ $0.name }).joined(separator: "\n")
             alertView.addButton(withTitle: "Cancel")
             alertView.addButton(withTitle: "Yes")
             alertView.alertStyle = .warning
@@ -207,6 +206,7 @@ struct ProfilesList: NSViewRepresentable {
                 textField.identifier = tableColumn.identifier
                 textField.cell?.truncatesLastVisibleLine = true
                 textField.cell?.lineBreakMode = .byTruncatingTail
+                textField.textColor = profile.isMissingCers ? .systemRed: .black
                 return textField
             case "team":
                 let textField = NSTextField()
@@ -219,6 +219,7 @@ struct ProfilesList: NSViewRepresentable {
                 textField.identifier = tableColumn.identifier
                 textField.cell?.truncatesLastVisibleLine = true
                 textField.cell?.lineBreakMode = .byTruncatingTail
+                textField.textColor = profile.isMissingCers ? .systemRed: .black
                 return textField
             case "appid":
                 let textField = NSTextField()
@@ -231,6 +232,7 @@ struct ProfilesList: NSViewRepresentable {
                 textField.identifier = tableColumn.identifier
                 textField.cell?.truncatesLastVisibleLine = true
                 textField.cell?.lineBreakMode = .byTruncatingTail
+                textField.textColor = profile.isMissingCers ? .systemRed: .black
                 return textField
             case "creation":
                 let textField = NSTextField()
@@ -241,6 +243,7 @@ struct ProfilesList: NSViewRepresentable {
                 textField.drawsBackground = false
                 textField.stringValue = Self.dateFormatter.string(from: profile.creationDate)
                 textField.identifier = tableColumn.identifier
+                textField.textColor = profile.isMissingCers ? .systemRed: .black
                 return textField
             case "expiry":
                 let textField = NSTextField()
@@ -252,6 +255,7 @@ struct ProfilesList: NSViewRepresentable {
                 textField.stringValue = Self.dateFormatter.string(from: profile.expirationDate)
                 textField.textColor = profile.expirationDate < Date() ? .systemRed : .labelColor
                 textField.identifier = tableColumn.identifier
+                textField.textColor = profile.isMissingCers ? .systemRed: .black
                 return textField
             case "uuid":
                 let textField = NSTextField()
@@ -264,6 +268,7 @@ struct ProfilesList: NSViewRepresentable {
                 textField.identifier = tableColumn.identifier
                 textField.cell?.truncatesLastVisibleLine = true
                 textField.cell?.lineBreakMode = .byTruncatingTail
+                textField.textColor = profile.isMissingCers ? .systemRed: .black
                 return textField
             default:
                 fatalError()
@@ -277,7 +282,7 @@ struct ProfilesList: NSViewRepresentable {
         
         func tableViewSelectionDidChange(_ notification: Notification) {
             let row = (notification.object as! NSTableView).selectedRow
-            guard row != NSNotFound else { 
+            guard row >= 0 else { 
                 parent.selection = nil
                 return
             } 

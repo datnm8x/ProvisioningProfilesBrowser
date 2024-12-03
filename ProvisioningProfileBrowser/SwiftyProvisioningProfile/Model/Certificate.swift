@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import CommonCrypto
 
 public struct Certificate: Encodable, Equatable {
 
@@ -27,13 +28,21 @@ public struct Certificate: Encodable, Equatable {
     public let countryName: String
     public let orgName: String
     public let orgUnit: String
-    public let isValidPrivateKey: Bool
+    public let hasPrivateKey: Bool
     public let isInKeyChain: Bool
 
-    init(results: [CFString: Any], commonName: String?, isValidPrivateKey: Bool) throws {
+    public let sha1: String
+    public let sha256: String
+    public let subjectKeyIdentifier: String
+    public let serialNumber: String
+    public let signature: String
+
+    init(results: [CFString: Any], commonName: String?, hasPrivateKey: Bool, sha1: Data, sha256: Data) throws {
         self.commonName = commonName
-        self.isValidPrivateKey = isValidPrivateKey
+        self.hasPrivateKey = hasPrivateKey
         self.isInKeyChain = Certificate.queryCertificateFromKeyChain(commonName: commonName)
+        self.sha1 = sha1.hexDescription
+        self.sha256 = sha256.hexDescription
 
         notValidBefore = try Certificate.getValue(for: kSecOIDX509V1ValidityNotBefore, from: results)
         notValidAfter = try Certificate.getValue(for: kSecOIDX509V1ValidityNotAfter, from: results)
@@ -48,6 +57,12 @@ public struct Certificate: Encodable, Equatable {
         countryName = try Certificate.getValue(for: kSecOIDCountryName, fromDict: subjectName)
         orgName = try Certificate.getValue(for: kSecOIDOrganizationName, fromDict: subjectName)
         orgUnit = try Certificate.getValue(for: kSecOIDOrganizationalUnitName, fromDict: subjectName)
+
+        subjectKeyIdentifier = try Certificate.getSubjectKeyIdentifier(from: results)
+        serialNumber = try Certificate.getValue(for: kSecOIDX509V1SerialNumber, from: results)
+
+        let signatureData: Data = try Certificate.getValue(for: kSecOIDX509V1Signature, from: results)
+        signature = signatureData.hexDescription
     }
 
     static func getValue<T>(for key: CFString, from values: [CFString: Any]) throws -> T {
@@ -63,7 +78,7 @@ public struct Certificate: Encodable, Equatable {
                 return Date(timeIntervalSinceReferenceDate: value) as! T
             }
         }
-        
+
         guard let value = rawValue as? T else {
             let type = (node?[kSecPropertyKeyType] as? String) ?? String(describing: rawValue)
             throw InitError.failedToCastValue(expected: String(describing: T.self), actual: type)
@@ -89,5 +104,43 @@ public struct Certificate: Encodable, Equatable {
         
         return value
     }
-    
+
+    static func getSubjectKeyIdentifier(from values: [CFString: Any]) throws -> String {
+        let node = values[kSecOIDSubjectKeyIdentifier] as? [CFString: Any]
+        guard let rawValue = node?[kSecPropertyKeyValue], let values = rawValue as? [[CFString : Any]] else {
+            throw InitError.failedToFindValue(key: kSecOIDSubjectKeyIdentifier as String)
+        }
+
+        guard let rawData = values.first(where: { ($0[kSecPropertyKeyValue] as? Data) != nil })?[kSecPropertyKeyValue] as? Data else {
+            throw InitError.failedToFindLabel(label: kSecOIDSubjectKeyIdentifier as String)
+        }
+
+        return rawData.hexDescription
+    }
+}
+
+extension SecCertificate {
+    var sha1: Data {
+        let derData = data
+        var digest = [UInt8](repeating: 0, count: Int(CC_SHA1_DIGEST_LENGTH))
+        derData.withUnsafeBytes {
+            _ = CC_SHA1($0.baseAddress, CC_LONG(derData.count), &digest)
+        }
+        return Data(digest)
+    }
+
+    var sha256: Data {
+        let derData = data
+        var hash = [UInt8](repeating: 0,  count: Int(CC_SHA256_DIGEST_LENGTH))
+        derData.withUnsafeBytes {
+            _ = CC_SHA256($0.baseAddress, CC_LONG(derData.count), &hash)
+        }
+        return Data(hash)
+    }
+}
+
+extension Data {
+    var hexDescription: String {
+        return reduce("") {$0 + String(format: " %02x", $1)}
+    }
 }

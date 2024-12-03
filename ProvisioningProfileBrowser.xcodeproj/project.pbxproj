@@ -27,6 +27,9 @@
 		F60FE3392CF45FEA0075CEC2 /* DeveloperCertificate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F60FE32B2CF45FEA0075CEC2 /* DeveloperCertificate.swift */; };
 		F62B305B2CF0139D00979B37 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = F62B305A2CF0139D00979B37 /* Utils.swift */; };
 		F64EFE3D2CF058D500B47086 /* KeyboardShortcuts in Frameworks */ = {isa = PBXBuildFile; productRef = F64EFE3C2CF058D500B47086 /* KeyboardShortcuts */; };
+		F660729A2CF9944200B24E64 /* ProvisioningPreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = F66072992CF9944200B24E64 /* ProvisioningPreview.swift */; };
+		F69BF53B2CFDACDD00AA92D4 /* ProfileDetailItemView.xib in Resources */ = {isa = PBXBuildFile; fileRef = F69BF53A2CFDACDD00AA92D4 /* ProfileDetailItemView.xib */; };
+		F69BF53D2CFDAE4F00AA92D4 /* ProfileDetailHeaderView.xib in Resources */ = {isa = PBXBuildFile; fileRef = F69BF53C2CFDAE4F00AA92D4 /* ProfileDetailHeaderView.xib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -51,6 +54,9 @@
 		F60FE3302CF45FEA0075CEC2 /* SwiftyCMSDecoder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftyCMSDecoder.swift; sourceTree = "<group>"; };
 		F60FE3312CF45FEA0075CEC2 /* SwiftyProvisioningProfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftyProvisioningProfile.swift; sourceTree = "<group>"; };
 		F62B305A2CF0139D00979B37 /* Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
+		F66072992CF9944200B24E64 /* ProvisioningPreview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProvisioningPreview.swift; sourceTree = "<group>"; };
+		F69BF53A2CFDACDD00AA92D4 /* ProfileDetailItemView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ProfileDetailItemView.xib; sourceTree = "<group>"; };
+		F69BF53C2CFDAE4F00AA92D4 /* ProfileDetailHeaderView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ProfileDetailHeaderView.xib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -93,6 +99,9 @@
 				CA0526D725C4F479000D9F9A /* ProvisioningProfileBrowserApp.swift */,
 				CA0526F025CB96B1000D9F9A /* ProvisioningProfilesManager.swift */,
 				CA0526F625CB97F9000D9F9A /* QuickLookPreview.swift */,
+				F66072992CF9944200B24E64 /* ProvisioningPreview.swift */,
+				F69BF53A2CFDACDD00AA92D4 /* ProfileDetailItemView.xib */,
+				F69BF53C2CFDAE4F00AA92D4 /* ProfileDetailHeaderView.xib */,
 				F62B305A2CF0139D00979B37 /* Utils.swift */,
 				F60FE3322CF45FEA0075CEC2 /* SwiftyProvisioningProfile */,
 				CA0526DB25C4F47A000D9F9A /* Assets.xcassets */,
@@ -199,7 +208,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F69BF53D2CFDAE4F00AA92D4 /* ProfileDetailHeaderView.xib in Resources */,
 				CA0526DF25C4F47B000D9F9A /* Preview Assets.xcassets in Resources */,
+				F69BF53B2CFDACDD00AA92D4 /* ProfileDetailItemView.xib in Resources */,
 				CA0526DC25C4F47A000D9F9A /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -222,6 +233,7 @@
 				F60FE3392CF45FEA0075CEC2 /* DeveloperCertificate.swift in Sources */,
 				F62B305B2CF0139D00979B37 /* Utils.swift in Sources */,
 				CA0526FA25CB9857000D9F9A /* Configure.swift in Sources */,
+				F660729A2CF9944200B24E64 /* ProvisioningPreview.swift in Sources */,
 				CA05270325CBA035000D9F9A /* Optional+IsNotNil.swift in Sources */,
 				CA0526DA25C4F479000D9F9A /* ContentView.swift in Sources */,
 				CA0526F425CB97F5000D9F9A /* ProfilesList.swift in Sources */,

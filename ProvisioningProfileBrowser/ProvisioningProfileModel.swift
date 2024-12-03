@@ -1,5 +1,10 @@
 import Foundation
 
+struct Entitlement {
+    let key: String
+    let value: String
+}
+
 @objcMembers
 class ProvisioningProfileModel: NSObject {
     var url: URL
@@ -10,6 +15,11 @@ class ProvisioningProfileModel: NSObject {
     var expirationDate: Date
     var appID: String
     var isMissingCers: Bool
+    var platforms: [String]
+
+    var certs: [Certificate]
+    var entitlements: [Entitlement]
+    var devices: [String]
 
     init(
         url: URL,
@@ -19,7 +29,11 @@ class ProvisioningProfileModel: NSObject {
         creationDate: Date,
         expirationDate: Date,
         appID: String,
-        isMissingCers: Bool
+        isMissingCers: Bool,
+        platforms: [String],
+        cers: [Certificate],
+        entitlements: [Entitlement],
+        devices: [String]
     ) {
         self.url = url
         self.uuid = uuid
@@ -29,6 +43,10 @@ class ProvisioningProfileModel: NSObject {
         self.expirationDate = expirationDate
         self.appID = appID
         self.isMissingCers = isMissingCers
+        self.platforms = platforms
+        self.certs = cers
+        self.entitlements = entitlements
+        self.devices = devices
     }
 }
 

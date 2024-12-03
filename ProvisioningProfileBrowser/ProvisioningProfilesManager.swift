@@ -72,7 +72,14 @@ class ProvisioningProfilesManager: ObservableObject {
                         creationDate: profile.creationDate,
                         expirationDate: profile.expirationDate,
                         appID: profile.appID,
-                        isMissingCers: profile.isMissingCers
+                        isMissingCers: profile.isMissingCers,
+                        platforms: profile.platforms,
+                        cers: profile.developerCertificates.compactMap({ $0.certificate }),
+                        entitlements: profile.entitlements.compactMap({
+                            guard let value = $0.value.string else { return nil }
+                            return Entitlement(key: $0.key, value: value)
+                        }),
+                        devices: profile.provisionedDevices?.compactMap({ $0.isEmpty ? nil : $0 }) ?? []
                     )
                 )
             }
